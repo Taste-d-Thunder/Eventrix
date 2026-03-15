@@ -1,0 +1,8 @@
+{
+  "/book/[vendorId]/payment/page": "app/book/[vendorId]/payment/page.js",
+  "/vendor/dashboard/page": "app/vendor/dashboard/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/vendors/page": "app/vendors/page.js",
+  "/flowers/page": "app/flowers/page.js",
+  "/flowers/checkout/page": "app/flowers/checkout/page.js"
+}

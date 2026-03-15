@@ -1,0 +1,39 @@
+﻿
+> eventspace@0.1.0 lint
+> next lint
+
+node.exe : Converting 
+circular structure to JSON
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (Con  
+  verting circular struc   
+ ture to JSON:String) [    
+], RemoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+    --> starting at object 
+with constructor 'Object'
+    |     property 
+'configs' -> object with 
+constructor 'Object'
+    |     property 'flat' 
+-> object with constructor 
+'Object'
+    |     ...
+    |     property 
+'plugins' -> object with 
+constructor 'Object'
+    --- property 'react' 
+closes the circle
+Referenced from: K:\Startup
+\eventspace\eventspace\.esl
+intrc.json
