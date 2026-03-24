@@ -10,14 +10,17 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, Phone, Building2, MapPin, Tag, AlertCircle, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { Mail, Lock, User, Phone, Building2, MapPin, Tag, AlertCircle, ArrowRight, CheckCircle2, Sparkles, Check, X } from "lucide-react";
 import { registerUser, getCurrentUser } from "@/lib/auth";
 import { ROLE_REDIRECT } from "@/types/auth";
 import type { UserRole } from "@/types/auth";
+import { Captcha } from "@/components/ui/Captcha";
+import { ErrorBanner } from "@/components/ui/ErrorBanner";
 
 const ROLES: Array<{ value: UserRole; label: string; emoji: string; description: string }> = [
-  { value: "customer", label: "Customer", emoji: "🎉", description: "Book event services" },
-  { value: "vendor", label: "Vendor", emoji: "🏪", description: "Offer services" },
+  { value: "customer", label: "Customer", emoji: "🎉", description: "Order flowers" },
+  { value: "vendor", label: "Vendor", emoji: "🏪", description: "Sell flowers" },
+  { value: "delivery_partner", label: "Delivery", emoji: "🚗", description: "Deliver orders" },
 ];
 
 const SERVICE_CATEGORIES = [
@@ -53,7 +56,9 @@ function validate(data: FormData): FormErrors {
   if (!data.email) e.email = "Email is required";
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) e.email = "Enter a valid email";
   if (!data.password) e.password = "Password is required";
-  else if (data.password.length < 6) e.password = "Minimum 6 characters";
+  else if (data.password.length < 8) e.password = "Minimum 8 characters";
+  else if (!/[A-Z]/.test(data.password)) e.password = "Must contain an uppercase letter";
+  else if (!/[0-9]/.test(data.password)) e.password = "Must contain a number";
   if (data.password !== data.confirmPassword) e.confirmPassword = "Passwords do not match";
   if (data.role === "vendor") {
     if (!data.businessName.trim()) e.businessName = "Business name is required";
@@ -63,6 +68,21 @@ function validate(data: FormData): FormErrors {
     else if (!/^[6-9]\d{9}$/.test(data.phone.replace(/\s/g, ""))) e.phone = "Enter a valid 10-digit number";
   }
   return e;
+}
+
+// Password strength checker
+function getPasswordStrength(password: string): { score: number; label: string; color: string } {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  if (password.length >= 12) score++;
+
+  if (score <= 1) return { score, label: "Weak", color: "bg-red-500" };
+  if (score <= 2) return { score, label: "Fair", color: "bg-amber-500" };
+  if (score <= 3) return { score, label: "Good", color: "bg-blue-500" };
+  return { score, label: "Strong", color: "bg-emerald-500" };
 }
 
 export default function RegisterPage() {
@@ -76,6 +96,8 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaError, setCaptchaError] = useState(false);
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -89,6 +111,14 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return; // Prevent multiple submissions
+
+    // CAPTCHA check
+    if (!captchaVerified) {
+      setCaptchaError(true);
+      return;
+    }
+
     const errs = validate(form);
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
@@ -156,7 +186,7 @@ export default function RegisterPage() {
           {/* Role Tabs */}
           <div className="p-6 pb-0">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">I want to</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {ROLES.map((role) => (
                 <button key={role.value} type="button"
                   onClick={() => { setForm((f) => ({ ...f, role: role.value })); setErrors({}); }}
@@ -179,15 +209,12 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4" noValidate>
             {/* Submit error */}
-            <AnimatePresence>
-              {submitError && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
-                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-                  <p className="text-sm text-red-600">{submitError}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <ErrorBanner
+              message={submitError}
+              type="error"
+              visible={!!submitError}
+              onDismiss={() => setSubmitError("")}
+            />
 
             {/* Full Name */}
             <div className="space-y-1.5">
@@ -215,7 +242,7 @@ export default function RegisterPage() {
                 <label className="text-sm font-medium text-slate-700">Password <span className="text-red-400">*</span></label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input type="password" value={form.password} onChange={set("password")} placeholder="Min 6 chars" className={inputClass("password")} />
+                  <input type="password" value={form.password} onChange={set("password")} placeholder="Min 8 chars" className={inputClass("password")} />
                 </div>
                 {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
               </div>
@@ -228,6 +255,39 @@ export default function RegisterPage() {
                 {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword}</p>}
               </div>
             </div>
+
+            {/* Password strength indicator */}
+            {form.password && (() => {
+              const strength = getPasswordStrength(form.password);
+              const rules = [
+                { met: form.password.length >= 8, label: "8+ characters" },
+                { met: /[A-Z]/.test(form.password), label: "Uppercase letter" },
+                { met: /[0-9]/.test(form.password), label: "Number" },
+              ];
+              return (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-300 ${strength.color}`}
+                        style={{ width: `${(strength.score / 5) * 100}%` }}
+                      />
+                    </div>
+                    <span className={`text-[10px] font-bold ${strength.color.replace('bg-', 'text-')}`}>
+                      {strength.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {rules.map((rule) => (
+                      <span key={rule.label} className={`flex items-center gap-1 text-[10px] font-medium ${rule.met ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {rule.met ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                        {rule.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Vendor-specific fields */}
             <AnimatePresence>
@@ -289,6 +349,9 @@ export default function RegisterPage() {
               )}
             </AnimatePresence>
 
+            {/* CAPTCHA */}
+            <Captcha onVerified={setCaptchaVerified} error={captchaError && !captchaVerified} />
+
             {/* Submit */}
             <motion.button type="submit" disabled={loading || success}
               whileHover={!loading && !success ? { scale: 1.01 } : {}} whileTap={!loading && !success ? { scale: 0.99 } : {}}
@@ -301,7 +364,7 @@ export default function RegisterPage() {
                 <><motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full" />Creating account…</>
               ) : (
-                <>Create {form.role === "vendor" ? "Vendor" : "Customer"} Account<ArrowRight className="w-4 h-4" /></>
+                <>Create {form.role === "vendor" ? "Vendor" : form.role === "delivery_partner" ? "Delivery" : "Customer"} Account<ArrowRight className="w-4 h-4" /></>
               )}
             </motion.button>
 

@@ -30,26 +30,24 @@ import type { User as UserType } from "@/types/auth";
 import { cn } from "@/lib/utils";
 
 // ─── Navigation structure ─────────────────────────────────────────────────────
+// Ordering links are tagged so they can be hidden for admin/vendor/delivery roles
 
 const CENTER_NAV = [
-  { label: "Browse Vendors", href: "/vendors" },
-  { label: "Flowers", href: "/flowers" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "Cities", href: "/#cities" },
+  { label: "Flowers", href: "/flowers", orderingOnly: true },
 ] as const;
 
 const DROPDOWN_NAV = [
-  { label: "Explore Vendors", href: "/vendors" },
-  { label: "Packages", href: "/packages" },
-  { label: "Buy Flowers", href: "/flowers" },
-  { label: "Become a Vendor", href: "/vendor/register" },
+  { label: "Order Flowers", href: "/flowers", orderingOnly: true },
+  { label: "Become a Flower Seller", href: "/vendor/register", orderingOnly: false },
 ] as const;
 
 const MOBILE_ALL_NAV = [
-  ...CENTER_NAV,
-  { label: "Packages", href: "/packages" },
-  { label: "Become a Vendor", href: "/vendor/register" },
+  { label: "Flowers", href: "/flowers", orderingOnly: true },
+  { label: "Become a Flower Seller", href: "/vendor/register", orderingOnly: false },
 ];
+
+// Roles that should NOT see ordering links
+const NON_ORDERING_ROLES = ["admin", "vendor", "delivery_partner"];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -90,18 +88,21 @@ function UserMenu({ user, onLogout }: { user: UserType; onLogout: () => void }) 
     admin: "/admin/dashboard",
     vendor: "/vendor/dashboard",
     customer: "/dashboard",
+    delivery_partner: "/delivery/dashboard",
   }[user.role];
 
   const roleLabel = {
     admin: "Administrator",
     vendor: "Vendor",
     customer: "Customer",
+    delivery_partner: "Delivery Partner",
   }[user.role];
 
   const roleColor = {
     admin: "bg-red-100 text-red-700",
     vendor: "bg-blue-100 text-blue-700",
     customer: "bg-emerald-100 text-emerald-700",
+    delivery_partner: "bg-purple-100 text-purple-700",
   }[user.role];
 
   return (
@@ -267,14 +268,16 @@ export function Navbar() {
 
             {/* ── ZONE 2: Center Navigation (hidden on mobile) ── */}
             <nav className="hidden lg:flex items-center gap-1 mx-auto" aria-label="Main navigation">
-              {CENTER_NAV.map((link) => (
-                <NavLink
-                  key={link.label}
-                  href={link.href}
-                  active={pathname === link.href}
-                >
-                  {link.label}
-                </NavLink>
+              {CENTER_NAV
+                .filter(link => !link.orderingOnly || !user || !NON_ORDERING_ROLES.includes(user.role))
+                .map((link) => (
+                  <NavLink
+                    key={link.label}
+                    href={link.href}
+                    active={pathname === link.href}
+                  >
+                    {link.label}
+                  </NavLink>
               ))}
             </nav>
 
@@ -288,7 +291,9 @@ export function Navbar() {
 
               {/* Extra nav links (desktop only, md-lg screens) */}
               <div className="hidden md:flex lg:hidden items-center gap-1">
-                {CENTER_NAV.slice(0, 2).map((link) => (
+                {CENTER_NAV
+                  .filter(link => !link.orderingOnly || !user || !NON_ORDERING_ROLES.includes(user.role))
+                  .slice(0, 2).map((link) => (
                   <NavLink key={link.label} href={link.href} active={pathname === link.href}>
                     {link.label}
                   </NavLink>
@@ -297,7 +302,9 @@ export function Navbar() {
 
               {/* Explore / Packages / Become a Vendor — desktop */}
               <div className="hidden lg:flex items-center gap-1">
-                {DROPDOWN_NAV.map((link) => (
+                {DROPDOWN_NAV
+                  .filter(link => !link.orderingOnly || !user || !NON_ORDERING_ROLES.includes(user.role))
+                  .map((link) => (
                   <NavLink key={link.label} href={link.href} active={pathname === link.href}>
                     {link.label}
                   </NavLink>
@@ -329,7 +336,7 @@ export function Navbar() {
                       whileTap={{ scale: 0.97 }}
                       className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 rounded-xl shadow-sm hover:shadow-md transition-all duration-150 whitespace-nowrap"
                     >
-                      List Your Service
+                      Become a Flower Seller
                     </motion.button>
                   </Link>
                 </div>
@@ -406,7 +413,9 @@ export function Navbar() {
 
               {/* Navigation links */}
               <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
-                {MOBILE_ALL_NAV.map((link, i) => (
+                {MOBILE_ALL_NAV
+                  .filter(link => !link.orderingOnly || !user || !NON_ORDERING_ROLES.includes(user.role))
+                  .map((link, i) => (
                   <motion.div
                     key={link.label}
                     initial={{ opacity: 0, x: 20 }}
@@ -430,7 +439,7 @@ export function Navbar() {
 
                 {user && (
                   <Link
-                    href={user.role === "admin" ? "/admin/dashboard" : user.role === "vendor" ? "/vendor/dashboard" : "/dashboard"}
+                    href={user.role === "admin" ? "/admin/dashboard" : user.role === "vendor" ? "/vendor/dashboard" : user.role === "delivery_partner" ? "/delivery/dashboard" : "/dashboard"}
                     onClick={() => setMobileOpen(false)}
                     className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-all"
                   >
@@ -459,7 +468,7 @@ export function Navbar() {
                     </Link>
                     <Link href="/vendor/register" onClick={() => setMobileOpen(false)}>
                       <button className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm shadow-md transition-all">
-                        List Your Service
+                        Become a Flower Seller
                       </button>
                     </Link>
                   </>

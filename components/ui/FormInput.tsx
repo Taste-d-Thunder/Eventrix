@@ -88,7 +88,7 @@ const ROLES: RoleOption[] = [
   {
     value: "customer",
     label: "Customer",
-    description: "Book event services",
+    description: "Order flowers",
     icon: "🎉",
     color: "text-emerald-600",
     activeBg: "bg-emerald-50",
@@ -97,11 +97,20 @@ const ROLES: RoleOption[] = [
   {
     value: "vendor",
     label: "Vendor",
-    description: "Offer your services",
+    description: "Sell flowers",
     icon: "🏪",
     color: "text-blue-600",
     activeBg: "bg-blue-50",
     activeBorder: "border-blue-400",
+  },
+  {
+    value: "delivery_partner",
+    label: "Delivery",
+    description: "Deliver orders",
+    icon: "🚗",
+    color: "text-purple-600",
+    activeBg: "bg-purple-50",
+    activeBorder: "border-purple-400",
   },
   {
     value: "admin",
@@ -158,8 +167,3 @@ export function RoleSelector({ value, onChange, showAdmin = false }: RoleSelecto
   );
 }
 
-// ─── Utility ─────────────────────────────────────────────────────────────────
-
-export function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(" ");
-}

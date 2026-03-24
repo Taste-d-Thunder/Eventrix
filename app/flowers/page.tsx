@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Flower2, Truck, Minus, Plus, CheckCircle2, ArrowRight, MapPin, AlertCircle } from "lucide-react";
+import { ShoppingCart, Flower2, Truck, Minus, Plus, CheckCircle2, ArrowRight, MapPin, AlertCircle, LogIn } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 
 const CITIES = [
@@ -38,14 +38,22 @@ export default function FlowersPage() {
   const [orderType, setOrderType] = useState<"single" | "bulk">("single");
   const [city, setCity] = useState("");
   const [ordered, setOrdered] = useState(false);
-  const [isVendor, setIsVendor] = useState(false);
+  const [isNonCustomer, setIsNonCustomer] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     const user = getCurrentUser();
-    if (user?.role === "vendor") setIsVendor(true);
+    if (!user) {
+      setIsLoggedOut(true);
+    } else if (["admin", "vendor", "delivery_partner"].includes(user.role)) {
+      setIsNonCustomer(true);
+      setUserRole(user.role === "delivery_partner" ? "delivery partner" : user.role);
+    }
   }, []);
 
   const addToCart = (flowerId: string) => {
+    if (isNonCustomer || isLoggedOut) return;
     setCart((prev) => {
       const existing = prev.find((c) => c.id === flowerId);
       if (existing) {
@@ -107,12 +115,12 @@ export default function FlowersPage() {
           </p>
         </motion.div>
 
-        {/* Vendor notice */}
-        {isVendor && (
+        {/* Non-customer notice */}
+        {isNonCustomer && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="flex items-center gap-2 justify-center mb-6 text-sm text-blue-600 bg-blue-50 border border-blue-200 rounded-xl py-3 px-4 max-w-lg mx-auto">
+            className="flex items-center gap-2 justify-center mb-6 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl py-3 px-4 max-w-lg mx-auto">
             <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>You're logged in as a <strong>vendor</strong>. To purchase flowers, please use a <strong>customer account</strong>.</span>
+            <span>You&apos;re logged in as a <strong>{userRole}</strong>. Ordering is only available for <strong>customer accounts</strong>.</span>
           </motion.div>
         )}
 
@@ -217,7 +225,17 @@ export default function FlowersPage() {
 
                   {/* Qty controls */}
                   <div className="flex items-center justify-between mt-3">
-                    {qty > 0 ? (
+                    {isNonCustomer ? (
+                      <span className="text-xs text-slate-400 italic">Ordering disabled</span>
+                    ) : isLoggedOut ? (
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => router.push("/login")}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-colors shadow-sm"
+                      >
+                        <LogIn className="w-3.5 h-3.5" /> Login to Order
+                      </motion.button>
+                    ) : qty > 0 ? (
                       <div className="flex items-center gap-2">
                         <button onClick={() => removeFromCart(flower.id)}
                           className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
@@ -248,9 +266,9 @@ export default function FlowersPage() {
           })}
         </div>
 
-        {/* Sticky Cart Bar */}
+        {/* Sticky Cart Bar — only for customers */}
         <AnimatePresence>
-          {totalItems > 0 && (
+          {totalItems > 0 && !isNonCustomer && (
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}

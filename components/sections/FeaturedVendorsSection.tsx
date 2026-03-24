@@ -27,9 +27,9 @@ export function FeaturedVendorsSection() {
     <Section className="bg-ivory overflow-hidden">
       <div className="flex items-end justify-between mb-10">
         <SectionHeader
-          eyebrow="Curated for you"
-          title="Featured Vendors"
-          subtitle="Handpicked professionals who consistently deliver extraordinary experiences."
+          eyebrow="Freshly picked for you"
+          title="Top Flower Shops"
+          subtitle="Handpicked florists who consistently deliver stunning arrangements."
           className="mb-0"
         />
 
@@ -76,7 +76,7 @@ export function FeaturedVendorsSection() {
       {/* Mobile CTA */}
       <div className="mt-8 md:hidden text-center">
         <Link href="/vendors">
-          <Button variant="outline">View All Vendors</Button>
+          <Button variant="outline">View All Flower Shops</Button>
         </Link>
       </div>
     </Section>

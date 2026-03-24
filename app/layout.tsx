@@ -1,5 +1,13 @@
 // ─── Root Layout ─────────────────────────────────────────────────────────────
 // Provides global styles, fonts, and persistent UI shells (Navbar, Footer)
+//
+// Security headers must be implemented in next.config.js in production:
+// - Content-Security-Policy
+// - X-Frame-Options: DENY
+// - X-Content-Type-Options: nosniff
+// - Referrer-Policy: strict-origin-when-cross-origin
+// - Permissions-Policy
+// See: https://nextjs.org/docs/app/api-reference/next-config-js/headers
 
 import type { Metadata, Viewport } from "next";
 import { Navbar } from "@/components/layout/Navbar";
@@ -17,21 +25,21 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Discover and book 2,000+ verified event vendors across India. Venues, photographers, caterers, decorators, DJs, cake artists & makeup professionals.",
+    "Order fresh flowers, roses, bouquets and luxury arrangements from 500+ verified flower shops across India. Same-day delivery guaranteed.",
 
   keywords: [
-    "event vendors",
-    "wedding vendors",
-    "event planning",
-    "caterers",
-    "photographers",
-    "event venues India",
+    "flower delivery",
+    "fresh flowers",
+    "bouquets online",
+    "roses delivery India",
+    "flower shops near me",
+    "same day flowers",
   ],
 
   openGraph: {
-    title: "EventSpace — India's Event Vendor Marketplace",
+    title: "EventSpace — India's Flower Delivery Marketplace",
     description:
-      "Find and book trusted vendors for weddings, birthdays, and corporate events.",
+      "Order fresh flowers for birthdays, anniversaries, weddings, and everyday gifting. Same-day delivery.",
     url: "https://eventspace.in",
     siteName: "EventSpace",
     locale: "en_IN",
@@ -89,6 +97,23 @@ export default function RootLayout({
         {/* Footer */}
         <Footer />
 
+        {/*
+          Inspect Protection (UX Only — Part 8)
+          This does NOT prevent real inspection. For UX deterrence only.
+          Disables right-click and text selection on elements with data-protected attribute.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // This does NOT prevent real inspection. For UX deterrence only.
+              document.addEventListener('contextmenu', function(e) {
+                if (e.target && e.target.closest && e.target.closest('[data-protected]')) {
+                  e.preventDefault();
+                }
+              });
+            `,
+          }}
+        />
       </body>
     </html>
   );

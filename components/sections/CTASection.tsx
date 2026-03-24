@@ -29,13 +29,13 @@ export function CTASection() {
           </div>
 
           <h2 className="font-display text-4xl md:text-5xl text-white font-semibold mb-4 leading-tight">
-            Start Planning Your
+            Order Your
             <br />
-            <span className="italic">Dream Event</span>
+            <span className="italic">Perfect Bouquet</span>
           </h2>
 
           <p className="text-brand-100 font-body text-lg mb-8 max-w-md mx-auto leading-relaxed">
-            Join 50,000+ happy couples and event planners who found their perfect vendors on EventSpace.
+            Join 10,000+ happy customers who get fresh flowers delivered to their door with EventSpace.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -44,7 +44,7 @@ export function CTASection() {
               size="lg"
               className="bg-white text-brand-700 hover:bg-brand-50 w-full sm:w-auto"
             >
-              Browse Vendors
+              Browse Flowers
               <ArrowRight className="w-4 h-4" />
             </Button>
             <Button
@@ -52,7 +52,7 @@ export function CTASection() {
               size="lg"
               className="text-white hover:bg-white/10 border border-white/30 w-full sm:w-auto"
             >
-              List Your Service
+              Become a Flower Seller
             </Button>
           </div>
         </div>

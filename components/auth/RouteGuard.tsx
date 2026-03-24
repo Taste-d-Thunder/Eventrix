@@ -51,6 +51,7 @@ export function RouteGuard({
         admin: "/admin/dashboard",
         vendor: "/vendor/dashboard",
         customer: "/dashboard",
+        delivery_partner: "/delivery/dashboard",
       };
       router.replace(roleMap[user.role]);
       return;

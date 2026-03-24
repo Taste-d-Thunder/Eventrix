@@ -4,9 +4,9 @@
  * Client-side auth helpers using localStorage for session persistence.
  *
  * In production, replace localStorage with:
- *   - HTTP-only cookies (preferred for security)
- *   - NextAuth.js / Clerk / Supabase Auth
- *   - JWT stored in a secure cookie
+ *   - Supabase Auth (recommended — see lib/supabase.ts)
+ *   - HTTP-only cookies
+ *   - NextAuth.js / Clerk
  *
  * All functions are synchronous for demo; add async/await when wiring to API.
  */
@@ -27,6 +27,7 @@ const DEMO_USERS: User[] = [
     avatar: "https://i.pravatar.cc/100?img=11",
     createdAt: new Date().toISOString(),
     isVerified: true,
+    status: "approved",
   },
   {
     id: "usr_vendor_001",
@@ -35,11 +36,13 @@ const DEMO_USERS: User[] = [
     role: "vendor",
     avatar: "https://i.pravatar.cc/100?img=5",
     createdAt: new Date().toISOString(),
-    businessName: "Petal & Plume Design",
-    serviceCategory: "Decorator",
+    businessName: "Petal & Plume Flowers",
+    serviceCategory: "Florist",
+    flowerTypes: "Roses, Lilies, Orchids",
     city: "Mumbai",
     phone: "+91 98765 43210",
     isVerified: true,
+    status: "approved",
   },
   {
     id: "usr_customer_001",
@@ -49,6 +52,19 @@ const DEMO_USERS: User[] = [
     avatar: "https://i.pravatar.cc/100?img=3",
     createdAt: new Date().toISOString(),
     isVerified: true,
+    status: "approved",
+  },
+  {
+    id: "usr_delivery_001",
+    name: "Kiran Reddy",
+    email: "delivery@eventspace.in",
+    role: "delivery_partner",
+    avatar: "https://i.pravatar.cc/100?img=8",
+    createdAt: new Date().toISOString(),
+    isVerified: true,
+    status: "approved",
+    city: "Mumbai",
+    phone: "+91 99887 76655",
   },
 ];
 
@@ -145,10 +161,18 @@ export function registerUser(credentials: RegisterCredentials): User {
     role: credentials.role,
     createdAt: new Date().toISOString(),
     isVerified: false,
+    // Vendors start as pending — admin must approve
+    status: credentials.role === "vendor" ? "pending" : "approved",
     // Vendor fields
     ...(credentials.role === "vendor" && {
       businessName: credentials.businessName,
       serviceCategory: credentials.serviceCategory,
+      flowerTypes: credentials.flowerTypes,
+      city: credentials.city,
+      phone: credentials.phone,
+    }),
+    // Delivery partner fields
+    ...(credentials.role === "delivery_partner" && {
       city: credentials.city,
       phone: credentials.phone,
     }),
@@ -225,4 +249,56 @@ export function updateCurrentUser(patch: Partial<User>): User | null {
   saveUsers(updatedUsers);
 
   return updated;
+}
+
+/**
+ * getAllUsers
+ * Returns all stored users — used by admin dashboard.
+ */
+export function getAllUsers(): User[] {
+  return getStoredUsers();
+}
+
+/**
+ * updateUserById
+ * Updates a specific user by ID — used by admin for vendor approval.
+ */
+export function updateUserById(userId: string, patch: Partial<User>): void {
+  const users = getStoredUsers();
+  const updatedUsers = users.map((u) =>
+    u.id === userId ? { ...u, ...patch } : u
+  );
+  saveUsers(updatedUsers);
+}
+
+/**
+ * requireAuth
+ * Returns the current user or null. Use in components to check login state.
+ * For page-level protection, use <ProtectedRoute> or <RouteGuard>.
+ */
+export function requireAuth(): User | null {
+  return getCurrentUser();
+}
+
+/**
+ * requireRole
+ * Returns true if the current user has the specified role.
+ * For page-level protection, use <ProtectedRoute role="..."> or <RouteGuard requiredRole="...">.
+ */
+export function requireRole(role: UserRole): boolean {
+  const user = getCurrentUser();
+  if (!user) return false;
+  return user.role === role;
+}
+
+/**
+ * validatePasswordStrength
+ * Checks if a password meets the strong password requirements.
+ * Returns an error message or null if valid.
+ */
+export function validatePasswordStrength(password: string): string | null {
+  if (password.length < 8) return "Password must be at least 8 characters";
+  if (!/[A-Z]/.test(password)) return "Password must contain an uppercase letter";
+  if (!/[0-9]/.test(password)) return "Password must contain a number";
+  return null;
 }

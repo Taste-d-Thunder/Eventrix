@@ -14,8 +14,8 @@ import type { User as UserType } from "@/types/auth";
 
 const NAV_ITEMS = [
   { label: "Overview", href: "/vendor/dashboard", icon: <BarChart3 className="w-4 h-4" /> },
-  { label: "My Services", href: "/vendor/dashboard/services", icon: <Package className="w-4 h-4" /> },
-  { label: "Bookings", href: "/vendor/dashboard/bookings", icon: <Calendar className="w-4 h-4" />, badge: 3 },
+  { label: "My Flower Services", href: "/vendor/dashboard/services", icon: <Package className="w-4 h-4" /> },
+  { label: "Flower Orders", href: "/vendor/dashboard/bookings", icon: <Calendar className="w-4 h-4" />, badge: 3 },
   { label: "Reviews", href: "/vendor/dashboard/reviews", icon: <Star className="w-4 h-4" /> },
   { label: "Earnings", href: "/vendor/dashboard/earnings", icon: <TrendingUp className="w-4 h-4" /> },
   { label: "Notifications", href: "/vendor/dashboard/notifications", icon: <Bell className="w-4 h-4" />, badge: 2 },
@@ -85,7 +85,7 @@ export default function VendorDashboard() {
             <Link href="/vendor/dashboard/services/new"
               className="flex items-center gap-2 bg-white text-blue-600 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
               <PlusCircle className="w-4 h-4" />
-              Add Service
+              Add Flower Service
             </Link>
           </div>
         </motion.div>
@@ -94,9 +94,9 @@ export default function VendorDashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { value: "₹3.85L", label: "This Month", sub: "+12% vs last", icon: <TrendingUp className="w-5 h-5 text-blue-600" />, color: "bg-blue-100" },
-            { value: "3", label: "Active Bookings", sub: "2 confirmed", icon: <Calendar className="w-5 h-5 text-amber-600" />, color: "bg-amber-100" },
+            { value: "3", label: "Active Orders", sub: "2 confirmed", icon: <Calendar className="w-5 h-5 text-amber-600" />, color: "bg-amber-100" },
             { value: "4.8★", label: "Avg. Rating", sub: "48 reviews", icon: <Star className="w-5 h-5 text-yellow-500" />, color: "bg-yellow-100" },
-            { value: "3", label: "Live Services", sub: "1 paused", icon: <Package className="w-5 h-5 text-emerald-600" />, color: "bg-emerald-100" },
+            { value: "3", label: "Live Flower Sets", sub: "1 paused", icon: <Package className="w-5 h-5 text-emerald-600" />, color: "bg-emerald-100" },
           ].map((s, i) => (
             <motion.div key={s.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
@@ -114,7 +114,7 @@ export default function VendorDashboard() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h3 className="font-semibold text-slate-900">Upcoming Bookings</h3>
+              <h3 className="font-semibold text-slate-900">Upcoming Flower Orders</h3>
               <Link href="/vendor/dashboard/bookings" className="text-xs text-amber-600 hover:text-amber-700 font-medium">View all →</Link>
             </div>
             <div className="divide-y divide-slate-50">
@@ -143,7 +143,7 @@ export default function VendorDashboard() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h3 className="font-semibold text-slate-900">My Services</h3>
+              <h3 className="font-semibold text-slate-900">My Flower Services</h3>
               <Link href="/vendor/dashboard/services/new" className="text-xs text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1">
                 <PlusCircle className="w-3.5 h-3.5" />Add
               </Link>

@@ -19,6 +19,8 @@ import {
   ArrowLeft,
   CheckCircle2,
   Sparkles,
+  Truck,
+  Shield,
 } from "lucide-react";
 import { getCurrentUser, updateCurrentUser } from "@/lib/auth";
 import type { User as UserType } from "@/types/auth";
@@ -33,6 +35,8 @@ const SERVICE_CATEGORIES = [
   "Cake Artist", "Makeup Artist", "Transportation", "Event Management", "Florist", "Other",
 ];
 
+const VEHICLE_TYPES = ["Bike", "Bicycle", "Scooter", "Car", "Auto-rickshaw", "On Foot"];
+
 export default function ProfilePage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,6 +48,7 @@ export default function ProfilePage() {
   const [city, setCity] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [serviceCategory, setServiceCategory] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
   const [avatarPreview, setAvatarPreview] = useState("");
   const [saved, setSaved] = useState(false);
 
@@ -60,6 +65,7 @@ export default function ProfilePage() {
     setCity(u.city || "");
     setBusinessName(u.businessName || "");
     setServiceCategory(u.serviceCategory || "");
+    setVehicleType((u as any).vehicleType || "");
     setAvatarPreview(u.avatar || "");
   }, [router]);
 
@@ -76,7 +82,7 @@ export default function ProfilePage() {
 
   const handleSave = () => {
     if (!user) return;
-    const patch: Partial<UserType> = {
+    const patch: Partial<UserType> & Record<string, any> = {
       name,
       email,
       phone,
@@ -85,6 +91,9 @@ export default function ProfilePage() {
       ...(user.role === "vendor" && {
         businessName,
         serviceCategory,
+      }),
+      ...(user.role === "delivery_partner" && {
+        vehicleType,
       }),
     };
     updateCurrentUser(patch);
@@ -156,9 +165,12 @@ export default function ProfilePage() {
               <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${
                 user.role === "admin" ? "bg-red-100 text-red-700" :
                 user.role === "vendor" ? "bg-blue-100 text-blue-700" :
+                user.role === "delivery_partner" ? "bg-purple-100 text-purple-700" :
                 "bg-emerald-100 text-emerald-700"
               }`}>
-                {user.role === "admin" ? "⚙️" : user.role === "vendor" ? "🏪" : "🎉"} {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                {user.role === "admin" ? "⚙️" : user.role === "vendor" ? "🏪" : user.role === "delivery_partner" ? "🚚" : "🎉"}
+                {" "}
+                {user.role === "delivery_partner" ? "Delivery Partner" : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
               </span>
             </div>
 
@@ -222,6 +234,41 @@ export default function ProfilePage() {
                       <option value="">Select…</option>
                       {SERVICE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Delivery Partner fields */}
+            {user.role === "delivery_partner" && (
+              <>
+                <div className="pt-2 border-t border-dashed border-purple-200">
+                  <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-3">Delivery Details</p>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700">Vehicle Type</label>
+                  <div className="relative">
+                    <Truck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <select value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} className={`${inputClass} appearance-none cursor-pointer`}>
+                      <option value="">Select…</option>
+                      {VEHICLE_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Admin fields */}
+            {user.role === "admin" && (
+              <>
+                <div className="pt-2 border-t border-dashed border-red-200">
+                  <p className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-3">Admin Details</p>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700">Admin Role</label>
+                  <div className="relative">
+                    <Shield className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input type="text" value="Super Administrator" disabled className={`${inputClass} bg-slate-50`} />
                   </div>
                 </div>
               </>

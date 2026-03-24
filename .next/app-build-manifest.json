@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/page": [
+    "/admin/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/admin/dashboard/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,40 +11,75 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/packages/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/packages/page.js"
+      "static/chunks/app/page.js"
     ],
-    "/vendors/page": [
+    "/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/vendors/page.js"
+      "static/chunks/app/login/page.js"
     ],
-    "/vendors/[id]/page": [
+    "/admin/manage-vendors/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/vendors/[id]/page.js"
+      "static/chunks/app/admin/manage-vendors/page.js"
     ],
-    "/book/[vendorId]/page": [
+    "/admin/dashboard/reports/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/book/[vendorId]/page.js"
+      "static/chunks/app/admin/dashboard/reports/page.js"
     ],
-    "/book/[vendorId]/payment/page": [
+    "/admin/dashboard/vendors/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/book/[vendorId]/payment/page.js"
+      "static/chunks/app/admin/dashboard/vendors/page.js"
     ],
-    "/vendor/dashboard/page": [
+    "/admin/dashboard/delivery/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/vendor/dashboard/page.js"
+      "static/chunks/app/admin/dashboard/delivery/page.js"
+    ],
+    "/admin/dashboard/users/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/dashboard/users/page.js"
+    ],
+    "/admin/dashboard/bookings/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/dashboard/bookings/page.js"
+    ],
+    "/admin/dashboard/settings/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/dashboard/settings/page.js"
     ],
     "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/profile/page.js"
+    ],
+    "/delivery/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/delivery/dashboard/page.js"
+    ],
+    "/delivery/dashboard/earnings/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/delivery/dashboard/earnings/page.js"
+    ],
+    "/delivery/dashboard/notifications/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/delivery/dashboard/notifications/page.js"
+    ],
+    "/delivery/dashboard/settings/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/delivery/dashboard/settings/page.js"
     ],
     "/flowers/page": [
       "static/chunks/webpack.js",
@@ -55,6 +90,21 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/flowers/checkout/page.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/page.js"
+    ],
+    "/dashboard/orders/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/orders/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

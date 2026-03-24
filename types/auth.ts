@@ -1,7 +1,7 @@
 // ─── types/auth.ts ─────────────────────────────────────────────────────────────
 // Central type definitions for the auth system
 
-export type UserRole = "admin" | "vendor" | "customer";
+export type UserRole = "admin" | "vendor" | "customer" | "delivery_partner";
 
 export interface User {
   id: string;
@@ -13,9 +13,12 @@ export interface User {
   // Vendor-specific fields
   businessName?: string;
   serviceCategory?: string;
+  flowerTypes?: string;
   city?: string;
   phone?: string;
   isVerified?: boolean;
+  // Vendor approval status
+  status?: "pending" | "approved" | "rejected";
 }
 
 export interface AuthState {
@@ -38,6 +41,7 @@ export interface RegisterCredentials {
   // Vendor-specific
   businessName?: string;
   serviceCategory?: string;
+  flowerTypes?: string;
   city?: string;
   phone?: string;
 }
@@ -47,6 +51,7 @@ export const ROLE_REDIRECT: Record<UserRole, string> = {
   admin: "/admin/dashboard",
   vendor: "/vendor/dashboard",
   customer: "/dashboard",
+  delivery_partner: "/delivery/dashboard",
 };
 
 /** Route prefixes that require each role */
@@ -54,4 +59,5 @@ export const PROTECTED_ROUTES: Record<string, UserRole> = {
   "/admin": "admin",
   "/vendor/dashboard": "vendor",
   "/dashboard": "customer",
+  "/delivery": "delivery_partner",
 };

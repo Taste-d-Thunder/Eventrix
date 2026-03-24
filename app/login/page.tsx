@@ -3,32 +3,42 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * Login page with:
  *   - Email + Password + Role selector
- *   - Client-side validation
- *   - Role-based redirect after login
+ *   - Strong password validation
+ *   - CAPTCHA verification (mock)
+ *   - Rate limiting (5 attempts → 10s cooldown)
+ *   - Loading states + disabled button while submitting
  *   - Demo credential helper
  *   - Framer Motion entrance animations
  */
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, AlertCircle, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, AlertCircle, ArrowRight, Sparkles, CheckCircle2, Clock } from "lucide-react";
 import { loginUser, getCurrentUser } from "@/lib/auth";
 import { ROLE_REDIRECT } from "@/types/auth";
 import type { UserRole } from "@/types/auth";
+import { Captcha } from "@/components/ui/Captcha";
+import { ErrorBanner } from "@/components/ui/ErrorBanner";
 
 // ─── Role config ──────────────────────────────────────────────────────────────
 
 const ROLES: Array<{ value: UserRole; label: string; emoji: string; demo: string; color: string; bg: string; border: string }> = [
   { value: "customer", label: "Customer", emoji: "🎉", demo: "user@eventspace.in", color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-400" },
   { value: "vendor", label: "Vendor", emoji: "🏪", demo: "vendor@eventspace.in", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-400" },
+  { value: "delivery_partner", label: "Delivery", emoji: "🚗", demo: "delivery@eventspace.in", color: "text-purple-700", bg: "bg-purple-50", border: "border-purple-400" },
   { value: "admin", label: "Admin", emoji: "⚙️", demo: "admin@eventspace.in", color: "text-red-700", bg: "bg-red-50", border: "border-red-400" },
 ];
 
-// ─── Form state ───────────────────────────────────────────────────────────────
+// ─── Rate Limiting ────────────────────────────────────────────────────────────
+
+const MAX_ATTEMPTS = 5;
+const COOLDOWN_SECONDS = 10;
+
+// ─── Form types ───────────────────────────────────────────────────────────────
 
 interface FormState {
   email: string;
@@ -63,11 +73,40 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // CAPTCHA
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaError, setCaptchaError] = useState(false);
+
+  // Rate limiting
+  const [attempts, setAttempts] = useState(0);
+  const [rateLimited, setRateLimited] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // Redirect if already logged in
   useEffect(() => {
     const user = getCurrentUser();
     if (user) router.replace(from || ROLE_REDIRECT[user.role]);
   }, [router, from]);
+
+  // Cooldown timer
+  useEffect(() => {
+    if (rateLimited) {
+      setCooldown(COOLDOWN_SECONDS);
+      cooldownRef.current = setInterval(() => {
+        setCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(cooldownRef.current!);
+            setRateLimited(false);
+            setAttempts(0);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => { if (cooldownRef.current) clearInterval(cooldownRef.current); };
+  }, [rateLimited]);
 
   const selectedRole = ROLES.find((r) => r.value === form.role)!;
 
@@ -79,6 +118,16 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Rate limit check
+    if (rateLimited) return;
+
+    // CAPTCHA check
+    if (!captchaVerified) {
+      setCaptchaError(true);
+      return;
+    }
+
     const errs = validate(form);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -86,6 +135,17 @@ export default function LoginPage() {
     }
     setErrors({});
     setLoading(true);
+
+    // Track attempts
+    const newAttempts = attempts + 1;
+    setAttempts(newAttempts);
+
+    if (newAttempts >= MAX_ATTEMPTS) {
+      setRateLimited(true);
+      setLoading(false);
+      setErrors({ submit: "Too many attempts. Please try again later." });
+      return;
+    }
 
     try {
       const user = loginUser(form);
@@ -100,6 +160,8 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  const isButtonDisabled = loading || success || rateLimited;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-orange-50 flex items-center justify-center p-4">
@@ -148,7 +210,7 @@ export default function LoginPage() {
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
               Sign in as
             </p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {ROLES.map((role) => (
                 <motion.button
                   key={role.value}
@@ -175,20 +237,20 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6 space-y-4" noValidate>
+            {/* Rate limit banner */}
+            <ErrorBanner
+              message={`Too many attempts. Please try again in ${cooldown}s.`}
+              type="rateLimit"
+              visible={rateLimited}
+            />
+
             {/* Submit error */}
-            <AnimatePresence>
-              {errors.submit && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl"
-                >
-                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-                  <p className="text-sm text-red-600">{errors.submit}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <ErrorBanner
+              message={errors.submit || ""}
+              type="error"
+              visible={!!errors.submit && !rateLimited}
+              onDismiss={() => setErrors((e) => ({ ...e, submit: undefined }))}
+            />
 
             {/* Email */}
             <div className="space-y-1.5">
@@ -203,10 +265,12 @@ export default function LoginPage() {
                   onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                   placeholder="you@example.com"
                   autoComplete="email"
+                  disabled={rateLimited}
                   className={`
                     w-full pl-10 pr-4 py-3 text-sm text-slate-900 bg-white border rounded-xl outline-none transition-all
                     placeholder:text-slate-400
                     focus:ring-3 focus:ring-amber-100
+                    disabled:bg-slate-50 disabled:cursor-not-allowed
                     ${errors.email
                       ? "border-red-300 focus:border-red-400"
                       : "border-slate-200 hover:border-slate-300 focus:border-amber-400"
@@ -235,9 +299,11 @@ export default function LoginPage() {
                   onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                   placeholder="••••••••"
                   autoComplete="current-password"
+                  disabled={rateLimited}
                   className={`
                     w-full pl-10 pr-4 py-3 text-sm text-slate-900 bg-white border rounded-xl outline-none transition-all
                     placeholder:text-slate-400 focus:ring-3 focus:ring-amber-100
+                    disabled:bg-slate-50 disabled:cursor-not-allowed
                     ${errors.password
                       ? "border-red-300 focus:border-red-400"
                       : "border-slate-200 hover:border-slate-300 focus:border-amber-400"
@@ -248,17 +314,22 @@ export default function LoginPage() {
               {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
             </div>
 
+            {/* CAPTCHA */}
+            <Captcha onVerified={setCaptchaVerified} error={captchaError && !captchaVerified} />
+
             {/* Submit */}
             <motion.button
               type="submit"
-              disabled={loading || success}
-              whileHover={!loading && !success ? { scale: 1.01 } : {}}
-              whileTap={!loading && !success ? { scale: 0.99 } : {}}
+              disabled={isButtonDisabled}
+              whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
+              whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
               className={`
                 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-sm
                 transition-all duration-200 shadow-sm hover:shadow-md mt-2
                 ${success
                   ? "bg-emerald-500 text-white"
+                  : rateLimited
+                  ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                   : loading
                   ? "bg-amber-400 text-white cursor-not-allowed"
                   : "bg-amber-500 hover:bg-amber-600 text-white"
@@ -269,6 +340,11 @@ export default function LoginPage() {
                 <>
                   <CheckCircle2 className="w-4 h-4" />
                   Signed in! Redirecting…
+                </>
+              ) : rateLimited ? (
+                <>
+                  <Clock className="w-4 h-4" />
+                  Wait {cooldown}s…
                 </>
               ) : loading ? (
                 <>

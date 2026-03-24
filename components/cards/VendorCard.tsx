@@ -148,7 +148,7 @@ export function VendorCard({
             {/* Price + response time */}
             <div className="flex items-center justify-between pt-2 border-t border-slate-100">
               <div>
-                <p className="text-xs text-slate-400">Starting from</p>
+                <p className="text-xs text-slate-400">From</p>
                 <p className="text-base font-bold text-slate-900">
                   {formatPrice(vendor.startingPrice)}
                   <span className="text-xs text-slate-400 font-normal"> / {vendor.priceUnit}</span>

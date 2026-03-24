@@ -18,6 +18,7 @@ import {
   Flower2,
   MapPin,
 } from "lucide-react";
+import { getCurrentUser } from "@/lib/auth";
 
 interface FlowerCartItem {
   id: string;
@@ -45,6 +46,17 @@ export default function FlowerCheckoutPage() {
   const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
+    // Block non-customer roles from checkout
+    const user = getCurrentUser();
+    if (!user) {
+      router.replace("/login?from=/flowers");
+      return;
+    }
+    if (["admin", "vendor", "delivery_partner"].includes(user.role)) {
+      router.replace("/flowers");
+      return;
+    }
+
     const raw = sessionStorage.getItem("es_flower_cart");
     if (raw) {
       setCart(JSON.parse(raw));
@@ -65,6 +77,10 @@ export default function FlowerCheckoutPage() {
       const id = "FLR-" + Date.now().toString(36).toUpperCase();
       setOrderId(id);
 
+      // Calculate estimated delivery time (random between 30-50 mins)
+      const estMins = 30 + Math.floor(Math.random() * 20);
+      const estimatedDeliveryTime = `${estMins} mins`;
+
       // Save order to localStorage for My Orders
       const existingOrders = JSON.parse(localStorage.getItem("es_orders") || "[]");
       existingOrders.push({
@@ -76,6 +92,8 @@ export default function FlowerCheckoutPage() {
         deliveryDate,
         phone,
         status: "confirmed",
+        estimatedDeliveryTime,
+        deliveryStatus: "confirmed", // internal status for tracking simulation
         createdAt: new Date().toISOString(),
       });
       localStorage.setItem("es_orders", JSON.stringify(existingOrders));
@@ -124,6 +142,10 @@ export default function FlowerCheckoutPage() {
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Delivery</span>
               <span className="font-medium text-slate-900">{deliveryDate}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500">Est. Time</span>
+              <span className="font-medium text-pink-600">30-45 mins</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Amount Paid</span>

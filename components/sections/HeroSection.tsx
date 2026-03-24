@@ -8,7 +8,7 @@ import Image from "next/image";
 
 /* ───────────────── Types ───────────────── */
 
-interface EventType {
+interface FlowerCategory {
   id: string;
   label: string;
   emoji: string;
@@ -16,11 +16,12 @@ interface EventType {
 
 /* ───────────────── Data ───────────────── */
 
-const EVENT_TYPES: EventType[] = [
-  { id: "birthday", label: "Birthday", emoji: "🎂" },
-  { id: "wedding", label: "Wedding", emoji: "💍" },
-  { id: "anniversary", label: "Anniversary", emoji: "🌹" },
-  { id: "corporate", label: "Corporate Event", emoji: "🏢" },
+const CATEGORIES: FlowerCategory[] = [
+  { id: "roses", label: "Roses", emoji: "🌹" },
+  { id: "bouquets", label: "Bouquets", emoji: "💐" },
+  { id: "birthday", label: "Birthday Flowers", emoji: "🎂" },
+  { id: "anniversary", label: "Anniversary Flowers", emoji: "💕" },
+  { id: "luxury", label: "Luxury Flowers", emoji: "✨" },
 ];
 
 const CITIES = [
@@ -35,10 +36,10 @@ const CITIES = [
 ];
 
 const STATS = [
-  { value: "2,000+", label: "Verified Vendors" },
-  { value: "50K+", label: "Events Planned" },
-  { value: "15", label: "Cities Covered" },
-  { value: "4.9★", label: "Avg. Rating" },
+  { value: "50+", label: "Flower Varieties" },
+  { value: "10K+", label: "Happy Customers" },
+  { value: "10", label: "Cities Covered" },
+  { value: "20 min", label: "Express Delivery" },
 ];
 
 /* ───────────────── Animations ───────────────── */
@@ -64,7 +65,7 @@ const fadeUp = {
 export function HeroSection() {
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState("wedding");
+  const [activeTab, setActiveTab] = useState("roses");
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("Mumbai");
 
@@ -75,7 +76,7 @@ export function HeroSection() {
     if (activeTab) params.set("category", activeTab);
     if (city) params.set("city", city);
 
-    router.push(`/vendors?${params.toString()}`);
+    router.push(`/flowers?${params.toString()}`);
   };
 
   return (
@@ -114,7 +115,7 @@ export function HeroSection() {
             </div>
 
             <p className="text-sm text-slate-600">
-              <strong className="text-slate-900">50,000+</strong> events planned this year
+              <strong className="text-slate-900">10,000+</strong> bouquets delivered this month
             </p>
 
           </motion.div>
@@ -122,50 +123,49 @@ export function HeroSection() {
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.06]"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.06] text-center md:text-left"
           >
-            Plan Your
+            Fresh Flowers
             <br />
-            <span className="text-amber-500 italic">Perfect</span> Event
+            <span className="text-pink-500 italic">Delivered</span>
             <br />
-            in Minutes
+            to Your Door
           </motion.h1>
 
           {/* Subheading */}
           <motion.p
             variants={fadeUp}
-            className="text-lg md:text-xl text-slate-600 max-w-xl"
+            className="text-base md:text-xl text-slate-600 max-w-xl text-center md:text-left"
           >
-            Connect with 2,000+ verified vendors — venues, photographers,
-            caterers, DJs, and more.
+            Order roses, bouquets, and exotic arrangements for any occasion. Same-day delivery with freshness guaranteed.
           </motion.p>
 
-          {/* Event Type Pills */}
+          {/* Category Pills */}
           <motion.div variants={fadeUp} className="space-y-3">
 
-            <p className="text-xs uppercase tracking-wider text-slate-500">
-              What are you celebrating?
+            <p className="text-xs uppercase tracking-wider text-slate-500 text-center md:text-left">
+              Shop by category
             </p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start">
 
-              {EVENT_TYPES.map((type) => (
+              {CATEGORIES.map((cat) => (
 
                 <motion.button
-                  key={type.id}
+                  key={cat.id}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(type.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition
+                  onClick={() => setActiveTab(cat.id)}
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-sm font-medium border transition
                   
                   ${
-                    activeTab === type.id
-                      ? "bg-amber-50 border-amber-400 text-amber-700"
-                      : "bg-white border-slate-200 text-slate-600 hover:border-amber-200"
+                    activeTab === cat.id
+                      ? "bg-pink-50 border-pink-400 text-pink-700"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-pink-200"
                   }`}
                 >
-                  <span>{type.emoji}</span>
-                  {type.label}
+                  <span>{cat.emoji}</span>
+                  {cat.label}
 
                 </motion.button>
 
@@ -191,7 +191,7 @@ export function HeroSection() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder="Search vendors, venues, services..."
+                  placeholder="Search roses, lilies, orchids..."
                   className="flex-1 outline-none text-sm text-slate-800"
                 />
 
@@ -229,10 +229,10 @@ export function HeroSection() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSearch}
-                className="flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold text-sm"
+                className="flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-xl font-semibold text-sm w-full md:w-auto"
               >
                 <Search className="w-4 h-4" />
-                Search
+                Find Flowers
               </motion.button>
 
             </div>
@@ -248,7 +248,7 @@ export function HeroSection() {
 
             {STATS.map((stat) => (
 
-              <div key={stat.label}>
+              <div key={stat.label} className="text-center md:text-left">
                 <p className="text-2xl md:text-3xl font-bold text-slate-900">
                   {stat.value}
                 </p>

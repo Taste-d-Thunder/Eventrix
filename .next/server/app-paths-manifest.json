@@ -1,8 +1,9 @@
 {
-  "/book/[vendorId]/payment/page": "app/book/[vendorId]/payment/page.js",
-  "/vendor/dashboard/page": "app/vendor/dashboard/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/vendors/page": "app/vendors/page.js",
-  "/flowers/page": "app/flowers/page.js",
-  "/flowers/checkout/page": "app/flowers/checkout/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/delivery/dashboard/page": "app/delivery/dashboard/page.js",
+  "/flowers/checkout/page": "app/flowers/checkout/page.js",
+  "/login/page": "app/login/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/orders/page": "app/dashboard/orders/page.js",
+  "/page": "app/page.js"
 }

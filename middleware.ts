@@ -21,6 +21,7 @@ const PROTECTED_PATHS: Array<{ pattern: RegExp; role: string }> = [
   { pattern: /^\/admin(\/|$)/, role: "admin" },
   { pattern: /^\/vendor\/dashboard(\/|$)/, role: "vendor" },
   { pattern: /^\/dashboard(\/|$)/, role: "customer" },
+  { pattern: /^\/delivery(\/|$)/, role: "delivery_partner" },
 ];
 
 // Public paths that never need auth
@@ -41,7 +42,7 @@ export function middleware(request: NextRequest) {
   /**
    * Read session from cookie.
    * This cookie is set by the loginUser() function:
-   *   document.cookie = `es_role=${user.role}; path=/; max-age=86400`;
+   *   document.cookie = `es_session=${user.role}; path=/; max-age=86400`;
    * 
    * NOTE: For true security, use HttpOnly cookies via a /api/auth route.
    * localStorage cannot be read by middleware (server-side).
@@ -63,6 +64,7 @@ export function middleware(request: NextRequest) {
         admin: "/admin/dashboard",
         vendor: "/vendor/dashboard",
         customer: "/dashboard",
+        delivery_partner: "/delivery/dashboard",
       };
       return NextResponse.redirect(new URL(roleRoutes[user.role] || "/", request.url));
     }
@@ -80,5 +82,6 @@ export const config = {
     "/admin/:path*",
     "/vendor/dashboard/:path*",
     "/dashboard/:path*",
+    "/delivery/:path*",
   ],
 };

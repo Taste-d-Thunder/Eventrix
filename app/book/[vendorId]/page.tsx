@@ -21,12 +21,13 @@ import {
 import { vendors } from "@/lib/data";
 
 const EVENT_TYPES = [
-  "Wedding",
   "Birthday",
   "Anniversary",
-  "Corporate Event",
-  "Engagement",
-  "Baby Shower",
+  "Wedding",
+  "Congratulations",
+  "Get Well Soon",
+  "Thank You",
+  "Just Because",
   "Other",
 ];
 
@@ -116,13 +117,13 @@ export default function BookingPage() {
             Vendor Not Found
           </h2>
           <p className="text-slate-500 mb-4">
-            The vendor you're looking for doesn't exist.
+            The flower shop you&apos;re looking for doesn&apos;t exist.
           </p>
           <Link
             href="/vendors"
             className="text-amber-600 hover:text-amber-700 font-medium"
           >
-            ← Browse Vendors
+            ← Browse Flower Shops
           </Link>
         </div>
       </div>
@@ -334,7 +335,7 @@ export default function BookingPage() {
                 value={form.message}
                 onChange={set("message")}
                 rows={3}
-                placeholder="Tell the vendor about your vision, dietary needs, theme preferences…"
+                placeholder="Tell us about your flower preferences, colour choices, delivery instructions…"
                 className="w-full px-4 py-3 text-sm text-slate-900 border border-slate-200 hover:border-slate-300 focus:border-amber-400 rounded-xl outline-none focus:ring-3 focus:ring-amber-100 transition-all resize-none placeholder:text-slate-400"
               />
             </div>

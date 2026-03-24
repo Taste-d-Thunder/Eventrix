@@ -4,43 +4,43 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Search, MessageCircle, CalendarCheck, PartyPopper } from "lucide-react";
+import { Search, Flower2, CreditCard, Truck } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui";
 
 const steps = [
   {
     icon: Search,
     step: "01",
-    title: "Browse & Filter",
+    title: "Browse Flowers",
     description:
-      "Search from 2,000+ verified vendors across 7 categories and 15 cities. Use filters to narrow by price, rating, and availability.",
+      "Explore fresh roses, bouquets, luxury arrangements and more from 500+ verified flower shops across 10 cities.",
     color: "#F97316",
     bg: "#FFF7ED",
   },
   {
-    icon: MessageCircle,
+    icon: Flower2,
     step: "02",
-    title: "Connect & Discuss",
+    title: "Pick Your Arrangement",
     description:
-      "Chat directly with vendors. Share your vision, ask questions, and get custom quotes — all within the platform.",
-    color: "#3B82F6",
-    bg: "#EFF6FF",
+      "Choose from curated collections or request a custom bouquet. Compare prices, reviews, and delivery times.",
+    color: "#EC4899",
+    bg: "#FDF2F8",
   },
   {
-    icon: CalendarCheck,
+    icon: CreditCard,
     step: "03",
-    title: "Book Securely",
+    title: "Order & Pay Securely",
     description:
-      "Confirm your booking with a secure deposit. Your payment is protected until the event is complete.",
+      "Place your order with secure payment. Add a personalised message card for that special touch.",
     color: "#10B981",
     bg: "#ECFDF5",
   },
   {
-    icon: PartyPopper,
+    icon: Truck,
     step: "04",
-    title: "Celebrate!",
+    title: "Fresh Delivery!",
     description:
-      "Enjoy your perfectly planned event. Afterward, share your experience with an honest review.",
+      "Track your delivery partner in real-time. Fresh flowers arrive at your door — guaranteed.",
     color: "#8B5CF6",
     bg: "#F5F3FF",
   },
@@ -51,8 +51,8 @@ export function HowItWorksSection() {
     <Section id="how-it-works" className="bg-white">
       <SectionHeader
         eyebrow="Simple process"
-        title="How EventSpace Works"
-        subtitle="From discovery to your event day — a seamless experience designed to make planning effortless."
+        title="How It Works"
+        subtitle="From browsing to doorstep delivery — getting fresh flowers has never been easier."
         align="center"
       />
 

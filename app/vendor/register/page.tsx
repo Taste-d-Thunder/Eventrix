@@ -1,8 +1,8 @@
 /**
  * app/vendor/register/page.tsx
  * ─────────────────────────────────────────────────────────────────────────────
- * Dedicated vendor registration page with all business fields.
- * Redirects to /vendor/dashboard after successful registration.
+ * "Become a Flower Seller" — dedicated vendor registration page.
+ * Registers with status = "pending" — admin must approve.
  */
 
 "use client";
@@ -14,16 +14,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Building2, Tag, MapPin, Phone, Mail, Lock, User,
   CheckCircle2, ArrowRight, Sparkles, AlertCircle,
-  Star, Shield, Clock
+  Star, Shield, Clock, Flower2
 } from "lucide-react";
 import { registerUser } from "@/lib/auth";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const SERVICE_CATEGORIES = [
-  "Venue", "Photography", "Catering", "Decoration", "DJ & Music",
-  "Cake Artist", "Makeup Artist", "Transportation", "Event Management",
-  "Florist", "Sound & Lighting", "Invitation Designer", "Other",
+const FLOWER_TYPES = [
+  "Roses", "Lilies", "Orchids", "Sunflowers", "Tulips",
+  "Carnations", "Mixed Bouquets", "Exotic Flowers", "Indoor Plants",
+  "Wedding Arrangements", "Bulk Orders", "Other",
 ];
 
 const CITIES = [
@@ -32,9 +32,9 @@ const CITIES = [
 ];
 
 const BENEFITS = [
-  { icon: Star, text: "Get discovered by thousands of customers" },
-  { icon: Shield, text: "Verified vendor badge builds trust" },
-  { icon: Clock, text: "Manage bookings from one dashboard" },
+  { icon: Star, text: "Get discovered by thousands of flower buyers" },
+  { icon: Shield, text: "Verified seller badge builds customer trust" },
+  { icon: Clock, text: "Manage orders from one dashboard" },
 ];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -46,7 +46,7 @@ interface FormData {
   password: string;
   confirmPassword: string;
   businessName: string;
-  serviceCategory: string;
+  flowerTypes: string;
   city: string;
   description: string;
 }
@@ -63,8 +63,8 @@ function validate(data: FormData): FormErrors {
   if (!data.password) e.password = "Password required";
   else if (data.password.length < 6) e.password = "Minimum 6 characters";
   if (data.password !== data.confirmPassword) e.confirmPassword = "Passwords don't match";
-  if (!data.businessName.trim()) e.businessName = "Business name is required";
-  if (!data.serviceCategory) e.serviceCategory = "Please select a category";
+  if (!data.businessName.trim()) e.businessName = "Shop name is required";
+  if (!data.flowerTypes) e.flowerTypes = "Please select flower types";
   if (!data.city) e.city = "Please select your city";
   return e;
 }
@@ -76,7 +76,7 @@ export default function VendorRegisterPage() {
 
   const [form, setForm] = useState<FormData>({
     name: "", email: "", phone: "", password: "", confirmPassword: "",
-    businessName: "", serviceCategory: "", city: "", description: "",
+    businessName: "", flowerTypes: "", city: "", description: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState("");
@@ -103,7 +103,7 @@ export default function VendorRegisterPage() {
         name: form.name, email: form.email, password: form.password,
         role: "vendor",
         businessName: form.businessName,
-        serviceCategory: form.serviceCategory,
+        flowerTypes: form.flowerTypes,
         city: form.city,
         phone: form.phone,
       });
@@ -143,12 +143,12 @@ export default function VendorRegisterPage() {
           </div>
 
           <div className="space-y-3 mb-10">
-            <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider">For Vendors</p>
+            <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider">For Flower Sellers</p>
             <h2 className="text-3xl font-bold text-white leading-tight">
-              Grow your event business with us
+              Grow your flower business with us
             </h2>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Join 2,000+ verified vendors on India's fastest-growing event marketplace. Reach customers who are actively searching for your services.
+              Join thousands of verified flower sellers on India&apos;s fastest-growing flower marketplace. Reach customers who are actively looking for fresh flowers.
             </p>
           </div>
 
@@ -170,13 +170,13 @@ export default function VendorRegisterPage() {
             {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
           </div>
           <p className="text-slate-300 text-sm leading-relaxed italic mb-3">
-            "Listing on EventSpace tripled our monthly inquiries. The dashboard is easy and the customers are serious."
+            &quot;Since joining EventSpace, my flower orders have tripled. The platform makes it so easy to manage deliveries.&quot;
           </p>
           <div className="flex items-center gap-2.5">
             <img src="https://i.pravatar.cc/40?img=5" alt="Priya" className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-400/30" />
             <div>
               <p className="text-white text-xs font-semibold">Priya Mehta</p>
-              <p className="text-slate-500 text-xs">Decorator · Mumbai</p>
+              <p className="text-slate-500 text-xs">Florist · Mumbai</p>
             </div>
           </div>
         </div>
@@ -194,8 +194,11 @@ export default function VendorRegisterPage() {
           </Link>
 
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-white">Register as a Vendor</h1>
-            <p className="text-slate-400 text-sm mt-1.5">Already a vendor? <Link href="/login" className="text-amber-400 hover:text-amber-300 font-medium">Sign in</Link></p>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Flower2 className="w-6 h-6 text-pink-400" />
+              <h1 className="text-2xl font-bold text-white">Become a Flower Seller</h1>
+            </div>
+            <p className="text-slate-400 text-sm mt-1.5">Already a seller? <Link href="/login" className="text-amber-400 hover:text-amber-300 font-medium">Sign in</Link></p>
           </div>
 
           {/* Form card */}
@@ -223,7 +226,7 @@ export default function VendorRegisterPage() {
                   {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-slate-700">Email <span className="text-red-400">*</span></label>
                     <div className="relative">
@@ -242,7 +245,7 @@ export default function VendorRegisterPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-slate-700">Password <span className="text-red-400">*</span></label>
                     <div className="relative">
@@ -265,29 +268,29 @@ export default function VendorRegisterPage() {
 
             {/* Section: Business Info */}
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 pt-2 border-t border-dashed border-slate-200">Business Details</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 pt-2 border-t border-dashed border-slate-200">Shop Details</p>
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Business Name <span className="text-red-400">*</span></label>
+                  <label className="text-sm font-medium text-slate-700">Shop Name <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input type="text" value={form.businessName} onChange={set("businessName")} placeholder="Your Business Name" className={fieldClass("businessName")} />
+                    <input type="text" value={form.businessName} onChange={set("businessName")} placeholder="Your Flower Shop Name" className={fieldClass("businessName")} />
                   </div>
                   {errors.businessName && <p className="text-xs text-red-500">{errors.businessName}</p>}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-slate-700">Category <span className="text-red-400">*</span></label>
+                    <label className="text-sm font-medium text-slate-700">Flower Types <span className="text-red-400">*</span></label>
                     <div className="relative">
                       <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                      <select value={form.serviceCategory} onChange={set("serviceCategory")}
-                        className={`${fieldClass("serviceCategory")} appearance-none cursor-pointer`}>
+                      <select value={form.flowerTypes} onChange={set("flowerTypes")}
+                        className={`${fieldClass("flowerTypes")} appearance-none cursor-pointer`}>
                         <option value="">Select…</option>
-                        {SERVICE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        {FLOWER_TYPES.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
-                    {errors.serviceCategory && <p className="text-xs text-red-500">{errors.serviceCategory}</p>}
+                    {errors.flowerTypes && <p className="text-xs text-red-500">{errors.flowerTypes}</p>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-slate-700">City <span className="text-red-400">*</span></label>
@@ -304,12 +307,20 @@ export default function VendorRegisterPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Business Description <span className="text-slate-400 font-normal">(optional)</span></label>
+                  <label className="text-sm font-medium text-slate-700">Shop Description <span className="text-slate-400 font-normal">(optional)</span></label>
                   <textarea value={form.description} onChange={set("description")} rows={3}
-                    placeholder="Tell customers about your services, experience, and specialties…"
+                    placeholder="Tell customers about your flowers, specialties, and delivery areas…"
                     className="w-full px-4 py-3 text-sm text-slate-900 border border-slate-200 hover:border-slate-300 focus:border-amber-400 rounded-xl outline-none focus:ring-3 focus:ring-amber-100 transition-all resize-none placeholder:text-slate-400" />
                 </div>
               </div>
+            </div>
+
+            {/* Pending notice */}
+            <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+              <Shield className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-700">
+                Your shop will be reviewed by our team. Once approved, it will appear on the marketplace. This usually takes 24–48 hours.
+              </p>
             </div>
 
             {/* Terms checkbox */}
@@ -317,7 +328,7 @@ export default function VendorRegisterPage() {
               <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)}
                 className="w-4 h-4 mt-0.5 rounded border-slate-300 text-amber-500 focus:ring-amber-400 cursor-pointer shrink-0" />
               <span className="text-xs text-slate-500 leading-relaxed">
-                I agree to EventSpace's{" "}
+                I agree to EventSpace&apos;s{" "}
                 <Link href="/terms" className="text-amber-600 hover:underline">Terms of Service</Link> and{" "}
                 <Link href="/privacy" className="text-amber-600 hover:underline">Privacy Policy</Link>.
                 I confirm that all business information provided is accurate.
@@ -336,7 +347,7 @@ export default function VendorRegisterPage() {
                 <><motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full" />Creating your account…</>
               ) : (
-                <>Register as Vendor <ArrowRight className="w-4 h-4" /></>
+                <>Become a Flower Seller <ArrowRight className="w-4 h-4" /></>
               )}
             </motion.button>
           </div>

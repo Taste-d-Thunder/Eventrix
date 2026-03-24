@@ -41,6 +41,7 @@ const ROLE_STYLES: Record<UserRole, { badge: string; bg: string; accent: string 
   admin: { badge: "bg-red-100 text-red-700", bg: "from-red-500 to-red-600", accent: "#ef4444" },
   vendor: { badge: "bg-blue-100 text-blue-700", bg: "from-blue-500 to-blue-600", accent: "#3b82f6" },
   customer: { badge: "bg-emerald-100 text-emerald-700", bg: "from-emerald-500 to-emerald-600", accent: "#10b981" },
+  delivery_partner: { badge: "bg-purple-100 text-purple-700", bg: "from-purple-500 to-purple-600", accent: "#8b5cf6" },
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -63,6 +64,7 @@ export function DashboardLayout({ children, navItems, title, requiredRole }: Das
         admin: "/admin/dashboard",
         vendor: "/vendor/dashboard",
         customer: "/dashboard",
+        delivery_partner: "/delivery/dashboard",
       };
       router.replace(routes[current.role]);
       return;
@@ -95,7 +97,7 @@ export function DashboardLayout({ children, navItems, title, requiredRole }: Das
   if (!user) return null;
 
   const roleStyle = ROLE_STYLES[user.role];
-  const roleLabel = { admin: "Administrator", vendor: "Vendor", customer: "Customer" }[user.role];
+  const roleLabel = { admin: "Administrator", vendor: "Vendor", customer: "Customer", delivery_partner: "Delivery Partner" }[user.role];
 
   const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
     <div className={cn("flex flex-col h-full", mobile ? "bg-white" : "bg-slate-900")}>
