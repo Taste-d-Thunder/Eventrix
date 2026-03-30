@@ -96,6 +96,7 @@ export default function AdminSettingsPage() {
             <h3 className="font-semibold text-slate-900 flex items-center gap-2 text-sm">
               <Settings className="w-4 h-4 text-red-500" /> Preferences
             </h3>
+            {/* TODO: Backend Integration: Sync these toggles directly with a `platform_settings` table in Supabase */}
           </div>
           <div className="divide-y divide-slate-50">
             {[

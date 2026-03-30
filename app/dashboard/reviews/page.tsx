@@ -50,6 +50,7 @@ export default function ReviewsPage() {
         </div>
 
         <div className="space-y-3">
+          {/* TODO: Backend Integration: Fetch reviews submitted by this customer from Supabase */}
           {MOCK_REVIEWS.map((review, i) => (
             <motion.div
               key={review.id}

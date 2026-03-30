@@ -83,6 +83,7 @@ export default function DeliverySettingsPage() {
             <h3 className="font-semibold text-slate-900 flex items-center gap-2">
               <Settings className="w-4 h-4 text-purple-500" /> Preferences
             </h3>
+            {/* TODO: Backend Integration: Sync driver preferences directly with Supabase */}
           </div>
           <div className="divide-y divide-slate-50">
             {[

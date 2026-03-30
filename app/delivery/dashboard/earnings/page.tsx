@@ -67,6 +67,7 @@ export default function DeliveryEarningsPage() {
           className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           <h3 className="font-semibold text-slate-900 mb-4">This Week</h3>
           <div className="flex items-end justify-between gap-2 h-40">
+            {/* TODO: Backend Integration: Fetch delivery partner's daily earnings from Supabase */}
             {MOCK_DAILY.map((d) => (
               <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
                 <span className="text-[10px] text-slate-500 font-medium">₹{d.amount}</span>

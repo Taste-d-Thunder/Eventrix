@@ -85,6 +85,7 @@ export default function NotificationsPage() {
         </div>
 
         <div className="space-y-2">
+          {/* TODO: Backend Integration: Fetch user notifications from Supabase */}
           {notifications.map((notif, i) => (
             <motion.div
               key={notif.id}

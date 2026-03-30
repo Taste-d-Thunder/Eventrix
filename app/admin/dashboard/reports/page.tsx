@@ -66,8 +66,12 @@ export default function AdminReportsPage() {
         {/* Revenue Chart */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-          <h3 className="font-semibold text-slate-900 mb-4">Monthly Revenue</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-slate-900">Monthly Revenue</h3>
+            {/* TODO: Backend Integration: Add date range picker to filter Supabase revenue data */}
+          </div>
           <div className="flex items-end justify-between gap-3 h-48">
+            {/* TODO: Backend Integration: Replace MONTHLY_DATA with aggregated revenue metrics from Supabase */}
             {MONTHLY_DATA.map((m) => (
               <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
                 <span className="text-[10px] text-slate-500 font-medium">₹{(m.revenue / 1000).toFixed(0)}K</span>

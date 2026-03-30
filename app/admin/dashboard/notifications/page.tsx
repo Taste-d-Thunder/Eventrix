@@ -82,6 +82,7 @@ export default function AdminNotificationsPage() {
         </div>
 
         <div className="space-y-2">
+          {/* TODO: Backend Integration: Fetch system notifications specific to Admin role from Supabase */}
           {notifications.map((notif, i) => (
             <motion.div key={notif.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
               className={`bg-white rounded-xl border p-4 transition-all hover:shadow-sm group ${notif.read ? "border-slate-100 opacity-70" : "border-red-200 bg-red-50/30"}`}>

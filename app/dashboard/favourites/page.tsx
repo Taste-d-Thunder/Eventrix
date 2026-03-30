@@ -40,6 +40,7 @@ export default function FavouritesPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* TODO: Backend Integration: Fetch user's saved/favourite vendors from Supabase */}
           {MOCK_FAVOURITES.map((vendor, i) => (
             <motion.div
               key={vendor.id}

@@ -3,11 +3,12 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * Vendor detail page with anonymous chat + call buttons integrated.
  * Demonstrates Part 4 requirements: chat & call buttons below vendor info.
+ * PLUS dynamic prices/packages and shop photos from local storage store.
  */
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -23,6 +24,7 @@ import {
   Calendar,
 } from "lucide-react";
 import Link from "next/link";
+import { getVendorPackages, getVendorPhotos } from "@/lib/vendorStore";
 
 // ── Import anonymous communication components ──────────────────────────────
 import { ChatButton } from "@/components/ui/ChatButton";
@@ -33,7 +35,7 @@ import { AnonymousCallButton } from "@/components/ui/AnonymousCallButton";
 interface Package {
   id: string;
   name: string;
-  price: string;
+  price: string | number;
   unit: string;
   description: string;
   includes: string[];
@@ -118,12 +120,33 @@ const DUMMY_VENDOR: Vendor = {
 export default function VendorDetailPage() {
   // In production, fetch vendor by params.id from your API
   const { id } = useParams<{ id: string }>();
-  const vendor = DUMMY_VENDOR; // Replace: const vendor = await getVendorById(id);
+  // We use DUMMY_VENDOR as baseline, but we will dynamically adjust based on stored vendor packages / photos
+  const vendor = DUMMY_VENDOR; 
+
+  const [activePackages, setActivePackages] = useState<any[]>(vendor.packages);
+  const [activePhotos, setActivePhotos] = useState<string[]>([vendor.coverImage]);
 
   const [selectedPackage, setSelectedPackage] = useState(
     vendor.packages.find((p) => p.popular) || vendor.packages[0]
   );
   const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    // If dynamic data for this vendor ID exists in our local store, override the default data
+    if (id) {
+      getVendorPackages(id).then(pkgs => {
+        if (pkgs && pkgs.length > 0) {
+          setActivePackages(pkgs);
+          setSelectedPackage(pkgs.find((p: any) => p.popular) || pkgs[0]);
+        }
+      });
+      getVendorPhotos(id).then(photos => {
+        if (photos && photos.length > 0) {
+          setActivePhotos(photos);
+        }
+      });
+    }
+  }, [id]);
 
   return (
     <div className="min-h-screen bg-stone-50 pt-20">
@@ -138,12 +161,39 @@ export default function VendorDetailPage() {
         </div>
       </nav>
 
-      {/* ── Cover image ── */}
+      {/* ── Cover Image / Gallery ── */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-8">
-        <div className="relative h-[300px] md:h-[420px] rounded-2xl overflow-hidden">
-          <img src={vendor.coverImage} alt={vendor.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        </div>
+        {activePhotos.length > 1 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 h-[300px] md:h-[420px] rounded-2xl overflow-hidden shadow-sm">
+            <div className="md:col-span-2 relative h-full">
+              <img src={activePhotos[0]} alt={vendor.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+            <div className="hidden md:flex flex-col gap-2 h-full">
+              <div className="flex-1 relative overflow-hidden rounded-tr-2xl">
+                <img src={activePhotos[1]} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
+              {activePhotos.length > 2 ? (
+                <div className="flex-1 relative overflow-hidden rounded-br-2xl">
+                  <img src={activePhotos[2]} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                  {activePhotos.length > 3 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-semibold cursor-pointer hover:bg-black/60 transition-colors">
+                      +{activePhotos.length - 3} more
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex-1 relative bg-slate-100 rounded-br-2xl flex items-center justify-center">
+                  <span className="text-sm text-slate-400 font-medium">No more photos</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="relative h-[300px] md:h-[420px] rounded-2xl overflow-hidden shadow-sm">
+            <img src={activePhotos[0] || vendor.coverImage} alt={vendor.name} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          </div>
+        )}
       </div>
 
       {/* ── Content ── */}
@@ -266,48 +316,60 @@ export default function VendorDetailPage() {
 
             {/* ── Packages ── */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">Packages</h2>
+              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">Packages & Options</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {vendor.packages.map((pkg) => (
-                  <motion.div
-                    key={pkg.id}
-                    onClick={() => setSelectedPackage(pkg)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.2 }}
-                    className={`
-                      relative bg-white rounded-2xl p-5 border-2 cursor-pointer
-                      transition-all duration-300 shadow-sm hover:shadow-md
-                      ${selectedPackage?.id === pkg.id
-                        ? "border-amber-500 shadow-amber-100"
-                        : "border-slate-100 hover:border-slate-200"
-                      }
-                    `}
-                  >
-                    {pkg.popular && (
-                      <div className="absolute -top-3 left-4 bg-amber-500 text-white text-xs font-semibold px-3 py-0.5 rounded-full">
-                        Most Popular
-                      </div>
-                    )}
-                    {selectedPackage?.id === pkg.id && (
-                      <CheckCircle2 className="absolute top-4 right-4 w-5 h-5 text-amber-500" />
-                    )}
-                    <h3 className="font-semibold text-lg text-slate-900 mb-1">{pkg.name}</h3>
-                    <p className="text-xs text-slate-500 mb-2">{pkg.description}</p>
-                    <p className="text-2xl font-bold text-slate-900 mb-3">
-                      {pkg.price}
-                      <span className="text-sm font-normal text-slate-500"> / {pkg.unit}</span>
-                    </p>
-                    <ul className="space-y-1.5">
-                      {pkg.includes.map((item) => (
-                        <li key={item} className="flex items-center gap-2 text-sm text-slate-600">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                ))}
+                {activePackages.map((pkg) => {
+                  // Format price properly assuming number | string might be provided
+                  const formattedPrice = typeof pkg.price === 'number' ? `₹${pkg.price.toLocaleString("en-IN")}` : pkg.price;
+                  return (
+                    <motion.div
+                      key={pkg.id}
+                      onClick={() => setSelectedPackage(pkg)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.2 }}
+                      className={`
+                        relative bg-white rounded-2xl p-5 border-2 cursor-pointer
+                        transition-all duration-300 shadow-sm hover:shadow-md
+                        ${selectedPackage?.id === pkg.id
+                          ? "border-amber-500 shadow-amber-100"
+                          : "border-slate-100 hover:border-slate-200"
+                        }
+                      `}
+                    >
+                      {pkg.popular && (
+                        <div className="absolute -top-3 left-4 bg-amber-500 text-white text-xs font-semibold px-3 py-0.5 rounded-full shadow-sm">
+                          Most Popular
+                        </div>
+                      )}
+                      {selectedPackage?.id === pkg.id && (
+                        <CheckCircle2 className="absolute top-4 right-4 w-5 h-5 text-amber-500" />
+                      )}
+                      
+                      {/* Optional inline package image (if provided, common for custom flower services) */}
+                      {pkg.image && (
+                        <div className="h-24 w-full rounded-xl overflow-hidden mb-3">
+                          <img src={pkg.image} className="w-full h-full object-cover" alt={pkg.name} />
+                        </div>
+                      )}
+
+                      <h3 className="font-semibold text-lg text-slate-900 mb-1">{pkg.name}</h3>
+                      <p className="text-xs text-slate-500 mb-2">{pkg.description}</p>
+                      <p className="text-2xl font-bold text-slate-900 mb-3">
+                        {formattedPrice}
+                        <span className="text-sm font-normal text-slate-500"> / {pkg.unit}</span>
+                      </p>
+                      <ul className="space-y-1.5">
+                        {(pkg.includes || []).map((item: string) => (
+                          <li key={item} className="flex items-center gap-2 text-sm text-slate-600">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -318,7 +380,7 @@ export default function VendorDetailPage() {
               <p className="text-xs text-slate-500 mb-0.5">Selected Package</p>
               <p className="font-semibold text-slate-900 text-lg mb-0.5">{selectedPackage?.name}</p>
               <p className="text-3xl font-bold text-slate-900 mb-1">
-                {selectedPackage?.price}
+                {typeof selectedPackage?.price === 'number' ? `₹${selectedPackage?.price.toLocaleString("en-IN")}` : selectedPackage?.price}
                 <span className="text-sm font-normal text-slate-500"> / {selectedPackage?.unit}</span>
               </p>
 

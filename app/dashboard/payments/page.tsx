@@ -63,6 +63,7 @@ export default function PaymentsPage() {
             <h3 className="font-semibold text-slate-900">Transaction History</h3>
           </div>
           <div className="divide-y divide-slate-50">
+            {/* TODO: Backend Integration: Fetch user's transaction/payment history from Supabase */}
             {MOCK_TRANSACTIONS.map((txn) => (
               <div key={txn.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${txn.type === "refund" ? "bg-emerald-100" : "bg-slate-100"}`}>

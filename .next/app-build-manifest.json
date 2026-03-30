@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/admin/dashboard/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/page.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,100 +11,45 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
     "/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/login/page.js"
     ],
-    "/admin/manage-vendors/page": [
+    "/vendor/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/manage-vendors/page.js"
+      "static/chunks/app/vendor/dashboard/page.js"
     ],
-    "/admin/dashboard/reports/page": [
+    "/vendor/dashboard/services/new/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/reports/page.js"
+      "static/chunks/app/vendor/dashboard/services/new/page.js"
     ],
-    "/admin/dashboard/vendors/page": [
+    "/vendor/dashboard/bookings/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/vendors/page.js"
+      "static/chunks/app/vendor/dashboard/bookings/page.js"
     ],
-    "/admin/dashboard/delivery/page": [
+    "/vendor/dashboard/services/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/delivery/page.js"
+      "static/chunks/app/vendor/dashboard/services/page.js"
     ],
-    "/admin/dashboard/users/page": [
+    "/vendor/dashboard/earnings/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/users/page.js"
+      "static/chunks/app/vendor/dashboard/earnings/page.js"
     ],
-    "/admin/dashboard/bookings/page": [
+    "/vendor/dashboard/notifications/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/bookings/page.js"
+      "static/chunks/app/vendor/dashboard/notifications/page.js"
     ],
-    "/admin/dashboard/settings/page": [
+    "/vendor/dashboard/reviews/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/settings/page.js"
-    ],
-    "/profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/profile/page.js"
-    ],
-    "/delivery/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/delivery/dashboard/page.js"
-    ],
-    "/delivery/dashboard/earnings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/delivery/dashboard/earnings/page.js"
-    ],
-    "/delivery/dashboard/notifications/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/delivery/dashboard/notifications/page.js"
-    ],
-    "/delivery/dashboard/settings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/delivery/dashboard/settings/page.js"
-    ],
-    "/flowers/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/flowers/page.js"
-    ],
-    "/flowers/checkout/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/flowers/checkout/page.js"
-    ],
-    "/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/page.js"
-    ],
-    "/dashboard/orders/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/orders/page.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/vendor/dashboard/reviews/page.js"
     ]
   }
 }

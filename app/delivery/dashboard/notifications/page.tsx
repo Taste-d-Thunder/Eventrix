@@ -76,6 +76,7 @@ export default function DeliveryNotificationsPage() {
         </div>
 
         <div className="space-y-2">
+          {/* TODO: Backend Integration: Fetch real-time notifications for delivery partner via Supabase */}
           {notifications.map((notif, i) => (
             <motion.div
               key={notif.id}

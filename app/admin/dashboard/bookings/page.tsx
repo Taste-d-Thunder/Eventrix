@@ -64,10 +64,12 @@ export default function AdminBookingsPage() {
         {/* Orders Table */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100">
+          <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
             <h3 className="font-semibold text-slate-900">Recent Orders</h3>
+            {/* TODO: Backend Integration: Add export or filter functions via Supabase RPC/queries */}
           </div>
           <div className="divide-y divide-slate-50">
+            {/* TODO: Backend Integration: Fetch global flower orders from Supabase */}
             {MOCK_ORDERS.map((order) => {
               const st = STATUS_STYLES[order.status] || STATUS_STYLES.confirmed;
               return (

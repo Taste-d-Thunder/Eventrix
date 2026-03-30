@@ -1,9 +1,9 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/delivery/dashboard/page": "app/delivery/dashboard/page.js",
-  "/flowers/checkout/page": "app/flowers/checkout/page.js",
-  "/login/page": "app/login/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/orders/page": "app/dashboard/orders/page.js",
-  "/page": "app/page.js"
+  "/vendor/dashboard/services/new/page": "app/vendor/dashboard/services/new/page.js",
+  "/vendor/dashboard/page": "app/vendor/dashboard/page.js",
+  "/vendor/dashboard/bookings/page": "app/vendor/dashboard/bookings/page.js",
+  "/vendor/dashboard/services/page": "app/vendor/dashboard/services/page.js",
+  "/vendor/dashboard/earnings/page": "app/vendor/dashboard/earnings/page.js",
+  "/vendor/dashboard/reviews/page": "app/vendor/dashboard/reviews/page.js",
+  "/vendor/dashboard/notifications/page": "app/vendor/dashboard/notifications/page.js"
 }

@@ -281,6 +281,7 @@ export default function MyOrdersPage() {
           </motion.div>
         ) : (
           <div className="space-y-4">
+            {/* TODO: Backend Integration: Sync 'es_orders' array directly with live Supabase database rows */}
             {orders.map((order) => (
               <OrderCard key={order.id} order={order} onCancel={handleCancelOrder} />
             ))}

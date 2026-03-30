@@ -63,10 +63,12 @@ export default function AdminDeliveryPage() {
         {/* Partner List */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100">
+          <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
             <h3 className="font-semibold text-slate-900">All Partners</h3>
+            {/* TODO: Backend Integration: Add button to manually invite/add delivery partners via Supabase functions */}
           </div>
           <div className="divide-y divide-slate-50">
+            {/* TODO: Backend Integration: Map dynamic delivery partners array directly from Supabase DB */}
             {MOCK_PARTNERS.map((p) => (
               <div key={p.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-purple-700 font-bold shrink-0">
